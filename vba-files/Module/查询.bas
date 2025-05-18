@@ -10,6 +10,7 @@ Sub SerchByName()
 
     ' 设置工作表
     Set ws1 = ThisWorkbook.Sheets("管理界面") ' 当前工作表
+    Set ws2 = ThisWorkbook.Sheets("管理界面") ' 当前工作表
     Set ws2 = ThisWorkbook.Sheets("用户数据") ' 数据源工作表
     Set ws3 = ThisWorkbook.Sheets("资产清单") ' 数据源工作表
 
