@@ -1,6 +1,6 @@
 VERSION 1.0 CLASS
 BEGIN
-MultiUse = -1  'True
+  MultiUse = -1  'True
 END
 Attribute VB_Name = "ThisWorkbook"
 Attribute VB_GlobalNameSpace = False
@@ -11,20 +11,17 @@ Private Sub Workbook_Open()
   ' 这里是打开工作簿时要执行的代码
   WorkbookInit
   SheetsInit
-  LogPrintf ("欢迎使用资产管理系统")
-  HideWindow
+  LogPrintf "欢迎使用资产管理系统"
   Login
   ShowWindow
-  ' 自动选中 A1 单元格
-  Sheets(DefaultSheetName).Select
 End Sub
 
 Private Sub WorkbookInit()
   CurrentPath = ThisWorkbook.Path
-  ' ' 设置工作表为深度隐藏（无法通过右键菜单取消隐藏）
-  ' Sheets("机密数据").Visible = xlSheetVeryHidden
-  ' ' 保护工作簿结构（防止通过菜单栏操作）
-  ' ThisWorkbook.Protect Password:="123456", Structure:=True
+  ' 隐藏工作表
+  HideWindow
+  ' 保护工作簿结构
+  WorkbookLock
 End Sub
 
 Private Sub SheetsInit()
@@ -35,22 +32,26 @@ Private Sub SheetsInit()
   Set LDAssetsSheet = ThisWorkbook.Sheets(LDAssetsSheetName)
   Set UserDataSheet = ThisWorkbook.Sheets(UserDataSheetName)
 
-End Sub
+  HideSheet ManageSheetName
+  HideSheet AssetsSheetName
+  HideSheet LossHandleSheetName
+  HideSheet LDAssetsSheetName
+  HideSheet UserDataSheetName
 
-Private Sub ShowWindow()
-  ThisWorkbook.Windows(BookName).Visible = True ' 显示当前工作簿的窗口
-End Sub
+  SheetLock ManageSheet
+  SheetLock AssetsSheet
+  SheetLock LossHandleSheet
+  SheetLock LDAssetsSheet
+  SheetLock UserDataSheet
 
-Private Sub HideWindow()
-  ThisWorkbook.Windows(BookName).Visible = False ' 显示当前工作簿的窗口
 End Sub
 
 Private Sub Login()
   UserID = Environ("COMPUTERNAME")
   If GetUserName(UserID) Then
-    LogPrintf ("用户 " & UserName & " 已登陆")
+    LogPrintf "用户 " & UserName & " 已登陆"
   Else
-    LogPrintf ("用户 " & UserID & " 未注册")
+    LogPrintf "用户 " & UserID & " 未注册"
   End If
 End Sub
 
@@ -68,7 +69,7 @@ Private Function GetUserName(searchID As String) As Boolean
     MatchCase:=True)
 
     If Not foundCell Is Nothing Then
-      LogPrintf("匹配项位于：" & foundCell.Address(0, 0))
+      LogPrintf ("匹配项位于：" & foundCell.Address(0, 0))
       UserName = foundCell.Offset(0, -1).Value
       GetUserName = True
     End If
@@ -76,4 +77,6 @@ Private Function GetUserName(searchID As String) As Boolean
   End With
 
 End Function
+
+
 

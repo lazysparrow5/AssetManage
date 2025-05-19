@@ -2,6 +2,7 @@ Attribute VB_Name = "全局变量"
 
 '用户数据
 Public Const AdminID As String = "XING"
+Public Const AdminPwd As String = "123456"
 Public UserName As String '用户名'
 Public UserID As String '用户ID'
 
