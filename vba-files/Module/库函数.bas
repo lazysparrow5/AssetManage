@@ -2,7 +2,7 @@ Attribute VB_Name = "库函数"
 
 ' 表格上锁
 Sub SheetLock(ws As Worksheet)
-        ws.Protect Password:=AdminPwd, AllowFormattingCells:=False, AllowSorting:=False, AllowFiltering:=False  ' 不允许调整格式 不允许排序 不允许筛选
+    ws.Protect Password:=AdminPwd, AllowFormattingCells:=False, AllowSorting:=False, AllowFiltering:=False  ' 不允许调整格式 不允许排序 不允许筛选
 End Sub
 
 '表格解锁
@@ -59,6 +59,12 @@ End Sub
 Public Sub HideSheet(ws As Worksheet)
     ws.Visible = xlSheetVeryHidden
 End Sub
+
+Public Function GetLastDataRow(ws As Worksheet, Optional Byval columnNumber As Long = 1) As Long
+    GetLastDataRow = ws.Cells(ws.Rows.Count, columnNumber).End(xlUp).Row
+End Function
+
+
 
 ' 故障处理
 Sub ErrHandle()

@@ -31,21 +31,11 @@ Private Sub SheetsInit()
 
   GetDataBase
 
-  Set StartSheet = ThisWorkbook.Sheets(StartSheetName)
-  Set ManageSheet = ThisWorkbook.Sheets(ManageSheetName)
-  Set AssetsSheet = ThisWorkbook.Sheets(AssetsSheetName)
-  Set UserDataSheet = ThisWorkbook.Sheets(UserDataSheetName)
+  SetSheetHandle
 
-  ShowSheet StartSheet
+  ShowUserWindow
 
-  HideSheet ManageSheet
-  HideSheet AssetsSheet
-  HideSheet UserDataSheet
-
-  SheetLock StartSheet
-  SheetLock ManageSheet
-  SheetLock AssetsSheet
-  SheetLock UserDataSheet
+  SheetControl
 
   WorkbookLock ManageBook
 
@@ -65,13 +55,35 @@ Private Sub Login()
   End If
 End Sub
 
+Private Sub SheetControl()
+  SheetLock StartSheet
+  SheetLock ManageSheet
+  SheetLock AssetsSheet
+  SheetLock UserDataSheet
+End Sub
+
+Private Sub SetSheetHandle()
+  Set StartSheet = ThisWorkbook.Sheets(StartSheetName)
+  Set ManageSheet = ThisWorkbook.Sheets(ManageSheetName)
+  Set AssetsSheet = ThisWorkbook.Sheets(AssetsSheetName)
+  Set UserDataSheet = ThisWorkbook.Sheets(UserDataSheetName)
+End Sub
+
+Private  Sub ShowUserWindow()
+  ShowSheet StartSheet
+
+  HideSheet ManageSheet
+  HideSheet AssetsSheet
+  HideSheet UserDataSheet
+End Sub
+
 Private  Sub GetDataBase()
   Set DataBook = Workbooks.Open(CurrentPath & "\" & DataBookName)
 
   HideWindow DataBook
 
-  DataBook.Sheets(AssetsSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
-  DataBook.Sheets(UserDataSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
+  ' DataBook.Sheets(AssetsSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
+  ' DataBook.Sheets(UserDataSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
 
   DataBook.Close SaveChanges:=False
 
@@ -92,7 +104,7 @@ Private Function GetUserName(searchID As String) As Boolean
     MatchCase:=True)
 
     If Not foundCell Is Nothing Then
-      LogPrintf ("匹配项位于：" & foundCell.Address(0, 0))
+      ' LogPrintf ("匹配项位于：" & foundCell.Address(0, 0))
       UserName = foundCell.Offset(0, -1).Value
       GetUserName = True
     End If
