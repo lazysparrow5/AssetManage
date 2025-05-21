@@ -1,6 +1,6 @@
 VERSION 1.0 CLASS
 BEGIN
-  MultiUse = -1  'True
+MultiUse = -1  'True
 END
 Attribute VB_Name = "ThisWorkbook"
 Attribute VB_GlobalNameSpace = False
@@ -13,36 +13,41 @@ Private Sub Workbook_Open()
   SheetsInit
   LogPrintf "欢迎使用资产管理系统"
   Login
-  ShowWindow
+  Application.Visible = True
 End Sub
 
 Private Sub WorkbookInit()
   CurrentPath = ThisWorkbook.Path
-  ' 隐藏工作表
-  HideWindow
+  Set ManageBook = Workbooks(ManageBookName)
+  ' 隐藏工作簿
+  ShowWindow ManageBook
+  Application.Visible = False
   ' 保护工作簿结构
-  WorkbookLock
 End Sub
 
 Private Sub SheetsInit()
 
+  WorkbookUnLock ManageBook
+
+  GetDataBase
+
+  Set StartSheet = ThisWorkbook.Sheets(StartSheetName)
   Set ManageSheet = ThisWorkbook.Sheets(ManageSheetName)
   Set AssetsSheet = ThisWorkbook.Sheets(AssetsSheetName)
-  Set LossHandleSheet = ThisWorkbook.Sheets(LossHandleSheetName)
-  Set LDAssetsSheet = ThisWorkbook.Sheets(LDAssetsSheetName)
   Set UserDataSheet = ThisWorkbook.Sheets(UserDataSheetName)
 
-  HideSheet ManageSheetName
-  HideSheet AssetsSheetName
-  HideSheet LossHandleSheetName
-  HideSheet LDAssetsSheetName
-  HideSheet UserDataSheetName
+  ShowSheet StartSheet
 
+  HideSheet ManageSheet
+  HideSheet AssetsSheet
+  HideSheet UserDataSheet
+
+  SheetLock StartSheet
   SheetLock ManageSheet
   SheetLock AssetsSheet
-  SheetLock LossHandleSheet
-  SheetLock LDAssetsSheet
   SheetLock UserDataSheet
+
+  WorkbookLock ManageBook
 
 End Sub
 
@@ -50,9 +55,27 @@ Private Sub Login()
   UserID = Environ("COMPUTERNAME")
   If GetUserName(UserID) Then
     LogPrintf "用户 " & UserName & " 已登陆"
+    WorkbookUnLock ManageBook
+    ShowSheet ManageSheet
+    HideSheet StartSheet
+    WorkbookLock ManageBook
   Else
     LogPrintf "用户 " & UserID & " 未注册"
+    ' MsgBox "未查询到用户，请联系管理员进行登记"
   End If
+End Sub
+
+Private  Sub GetDataBase()
+  Set DataBook = Workbooks.Open(CurrentPath & "\" & DataBookName)
+
+  HideWindow DataBook
+
+  DataBook.Sheets(AssetsSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
+  DataBook.Sheets(UserDataSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
+
+  DataBook.Close SaveChanges:=False
+
+  Set DataBook = Nothing
 End Sub
 
 Private Function GetUserName(searchID As String) As Boolean
@@ -61,7 +84,7 @@ Private Function GetUserName(searchID As String) As Boolean
   Dim searchRange As Range
   Dim foundCell As Range
   With UserDataSheet
-    Set searchRange = .Range("C1:C" & .Cells(.Rows.Count, 3).End(xlUp).Row)
+    Set searchRange = .Range("B1:B" & .Cells(.Rows.Count, 2).End(xlUp).Row)
     ' 精确查找（区分大小写）
     Set foundCell = searchRange.Find(What:=searchID, _
     LookIn:=xlValues, _
