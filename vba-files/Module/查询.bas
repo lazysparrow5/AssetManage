@@ -1,6 +1,6 @@
 Attribute VB_Name = "查询"
 
-Sub searchByName()
+Public Sub searchByName()
     '
     ' 查询 Macro
     '
@@ -15,9 +15,11 @@ Sub searchByName()
 
     TargetSearchCopy filterValue, USER_COLUMN, False
 
+    LastSearch = NameSearch
+
 End Sub
 
-Sub searchImprotant()
+Public Sub searchImprotant()
     '
     ' 查询入资资产 Macro
     '
@@ -25,11 +27,13 @@ Sub searchImprotant()
 
     filterValue = ""
 
-    TargetSearchCopy filterValue, ASSETS_COLUMN, True
+    TargetSearchCopy filterValue, SGMW_COLUMN, True
+
+    LastSearch = ImportantSearch
 
 End Sub
 
-Sub searchByType()
+Public Sub searchByType()
 
     Dim filterValue As String
     ' 获取筛选值（假设下拉菜单在A1单元格）
@@ -40,6 +44,23 @@ Sub searchByType()
     ' ManageSheet.Range(TYPE_FILTER_CELL).Value = filterValue
 
     TargetSearchCopy filterValue, TYPE_COLUMN, False
+
+    LastSearch = TypeSearch
+
+End Sub
+
+Public Sub ReSearch()
+
+    Select Case LastSearch 
+     Case TypeSearch 
+        searchByType  
+     Case NameSearch 
+        searchByName  
+     Case ImportantSearch 
+        searchImprotant  
+     Case CheckSearch 
+        AssetsCheck
+    End Select
 
 End Sub
 
@@ -67,7 +88,7 @@ Public Sub TargetSearchCopy(filterValue As String, TargetColumn As Long, exclusi
     If Not matchedRange Is Nothing Then
         matchedRange.Copy ManageSheet.Cells(TARGET_ROW_START, 1)
     Else
-        MsgBox "未找到匹配的设备！"
+        ' MsgBox "未找到匹配的设备！"
     End If
 
     SheetLock ManageSheet
@@ -75,7 +96,7 @@ Public Sub TargetSearchCopy(filterValue As String, TargetColumn As Long, exclusi
 End Sub
 
 Public Sub TargetSearch(matchedRange As Range, TargetColumn As Long, filterValue As String)
-    
+
     Dim cell As Range
 
     For Each cell In AssetsSheet.Range(AssetsSheet.Cells(2, TargetColumn), AssetsSheet.Cells(AssetsIndexMax, TargetColumn))
@@ -91,7 +112,7 @@ Public Sub TargetSearch(matchedRange As Range, TargetColumn As Long, filterValue
 End Sub
 
 Public Sub ExcTargetSearch(matchedRange As Range, TargetColumn As Long, filterValue As String)
-    
+
     Dim cell As Range
 
     For Each cell In AssetsSheet.Range(AssetsSheet.Cells(2, TargetColumn), AssetsSheet.Cells(AssetsIndexMax, TargetColumn))

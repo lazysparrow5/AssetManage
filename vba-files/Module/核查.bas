@@ -18,4 +18,7 @@ Sub AssetsCheck()
     End If
 
     selectedRange.Sort Key1:=selectedRange.Columns(USER_COLUMN), Order1:=xlAscending, Header:=xlNo 
+
+    LastSearch = CheckSearch
+
 End Sub

@@ -1,11 +1,20 @@
 Attribute VB_Name = "全局变量"
 
+Public Enum SearchType
+TypeSearch = 1 
+NameSearch
+ImportantSearch
+CheckSearch
+End Enum
+
 '用户数据
 Public Const AdminID As String = "XING"
 Public Const AdminPwd As String = "123456"
 
 Public UserName As String '用户名'
 Public UserID As String '用户ID'
+
+Public LastSearch As SearchType
 
 '管理表格数据
 Public Const ManageBookName As String = "Assets.xlsm"
@@ -29,9 +38,18 @@ Public Const BRIEF_RETURN_CELL As String = "I7"     ' 归还物品简介输入位置
 ' 资产表格数据
 Public Const TARGET_ROW_START As Long = 11       ' 目标起始行
 Public Const INDEX_COLUMN As Long = 1           ' 设备序号
+Public Const NAME_COLUMN As Long =2                 '设备名称列号
+Public Const USER_COLUMN As Long = 3              ' 用户名称列号
+Public Const LOCATION_COLUMN As Long = 4          ' 存储地址列号
+Public Const BRIEF_COLUMN As Long = 5              ' 简介列号
+Public Const REVISER_COLUMN As Long = 6             ' 修改者列号
+Public Const WHOADD_COLUMN As Long = 7              ' 入库人
 Public Const TYPE_COLUMN As Long = 8             ' 设备类型列号
-Public Const USER_COLUMN As Long = 3              ' 设备名称列号
-Public Const ASSETS_COLUMN As Long = 9             '资产编号列号
+Public Const SGMW_COLUMN As Long = 9             '资产编号列号
+Public Const ORIGIN_COLUMN As Long = 10              ' 原厂编号列号
+Public Const TIME_COLUMN As Long = 11              ' 修改时间列号
+Public Const CHECK_COLUMN As Long = 12              ' 盘点结果列号
+Public Const MAX_COLUMN As Long = 13                '最大列号
 
 ' Public Const LDAssetsSheetName As String = "柳东资产"
 ' Public Const LossHandleSheetName As String = "遗失赔偿"

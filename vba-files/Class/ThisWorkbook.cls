@@ -29,11 +29,9 @@ Private Sub SheetsInit()
 
   WorkbookUnLock ManageBook
 
-  DataBaseOpen
-
   DataInit
 
-  ShowUserWindow
+  ShowNoMacroWindow
 
   SheetControl
 
@@ -46,8 +44,9 @@ Private Sub Login()
   If GetUserName(UserID) Then
     LogPrintf "用户 " & UserName & " 已登陆"
     WorkbookUnLock ManageBook
-    ShowSheet ManageSheet
-    HideSheet StartSheet
+    ManageSheet.Range(NAME_FILTER_CELL).Value = UserName
+    SearchByName
+    ShowUserWindow
     WorkbookLock ManageBook
   Else
     LogPrintf "用户 " & UserID & " 未注册"
@@ -62,14 +61,29 @@ Private Sub SheetControl()
   SheetLock UserDataSheet
 End Sub
 
-Private Sub SetSheetHandle()
-  Set StartSheet = ManageBook.Sheets(StartSheetName)
-  Set ManageSheet = ManageBook.Sheets(ManageSheetName)
-  Set AssetsSheet = ManageBook.Sheets(AssetsSheetName)
-  Set UserDataSheet = ManageBook.Sheets(UserDataSheetName)
+Private Sub ShowUserWindow()
+  ShowSheet ManageSheet
+
+  HideSheet StartSheet
+  HideSheet AssetsSheet
+  HideSheet UserDataSheet
 End Sub
 
-Private  Sub ShowUserWindow()
+Private Sub ShowAdminWindow()
+
+  ShowWindow DataBook
+
+  WorkbookUnLock ManageBook
+  ShowSheet ManageSheet
+
+  ShowSheet StartSheet
+  ShowSheet AssetsSheet
+  ShowSheet UserDataSheet
+  WorkbookLock ManageBook
+
+End Sub
+
+Private  Sub ShowNoMacroWindow()
   ShowSheet StartSheet
 
   HideSheet ManageSheet
@@ -79,33 +93,8 @@ End Sub
 
 Private Sub DataInit()
   DataBaseOpen
-    DataUpdate
+  DataUpdate
   DataBaseClose
-End Sub
-
-Public Sub GetDataBase()
-
-  ' DataBook.Sheets(AssetsSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
-  ' DataBook.Sheets(UserDataSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
-
-End Sub
-
-Public Sub DataBaseOpen()
-  Set DataBook = Workbooks.Open(CurrentPath & "\" & DataBookName)
-  HideWindow DataBook
-End Sub
-
-Public Sub DataBaseClose()
-  DataBook.Close SaveChanges:=True
-  Set DataBook = Nothing
-End Sub
-
-Public Sub DataUpdate()
-
-  GetDataBase
-  SetSheetHandle
-  AssetsIndexMax = GetLastDataRow(AssetsSheet)
-
 End Sub
 
 Private Function GetUserName(searchID As String) As Boolean

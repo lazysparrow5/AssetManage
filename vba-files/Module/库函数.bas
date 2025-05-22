@@ -60,10 +60,50 @@ Public Sub HideSheet(ws As Worksheet)
     ws.Visible = xlSheetVeryHidden
 End Sub
 
+Private Sub SetSheetHandle()
+    Set StartSheet = ManageBook.Sheets(StartSheetName)
+    Set ManageSheet = ManageBook.Sheets(ManageSheetName)
+    Set AssetsSheet = ManageBook.Sheets(AssetsSheetName)
+    Set UserDataSheet = ManageBook.Sheets(UserDataSheetName)
+End Sub
+
+Public Sub GetDataBase()
+
+    ' DataBook.Sheets(AssetsSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
+    ' DataBook.Sheets(UserDataSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
+
+End Sub
+
+Public Sub DataBaseOpen()
+    Set DataBook = Workbooks.Open(CurrentPath & "\" & DataBookName)
+    HideWindow DataBook
+End Sub
+
+Public Sub DataBaseClose()
+    DataBook.Close SaveChanges:=True
+    Set DataBook = Nothing
+End Sub
+
+Public Sub DataUpdate()
+
+    GetDataBase
+    SetSheetHandle
+    AssetsIndexMax = GetLastDataRow(AssetsSheet)
+
+End Sub
+
 Public Function GetLastDataRow(ws As Worksheet, Optional Byval columnNumber As Long = 1) As Long
     GetLastDataRow = ws.Cells(ws.Rows.Count, columnNumber).End(xlUp).Row
 End Function
 
+Public Function RowsDataIsSame(row1 As Range, row2 As Range) As Boolean
+
+    Dim arr1 As Variant, arr2 As Variant
+    arr1 = row1.Resize(1, 10).Value  ' 强制限制为10列
+    arr2 = row2.Resize(1, 10).Value
+    RowsDataIsSame = (Join(Application.Index(arr1, 1, 0),"|") = Join(Application.Index(arr2, 1, 0), "|")) 
+
+End Function
 
 
 ' 故障处理
