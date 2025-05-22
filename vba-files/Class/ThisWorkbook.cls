@@ -29,9 +29,9 @@ Private Sub SheetsInit()
 
   WorkbookUnLock ManageBook
 
-  GetDataBase
+  DataBaseOpen
 
-  SetSheetHandle
+  DataInit
 
   ShowUserWindow
 
@@ -63,10 +63,10 @@ Private Sub SheetControl()
 End Sub
 
 Private Sub SetSheetHandle()
-  Set StartSheet = ThisWorkbook.Sheets(StartSheetName)
-  Set ManageSheet = ThisWorkbook.Sheets(ManageSheetName)
-  Set AssetsSheet = ThisWorkbook.Sheets(AssetsSheetName)
-  Set UserDataSheet = ThisWorkbook.Sheets(UserDataSheetName)
+  Set StartSheet = ManageBook.Sheets(StartSheetName)
+  Set ManageSheet = ManageBook.Sheets(ManageSheetName)
+  Set AssetsSheet = ManageBook.Sheets(AssetsSheetName)
+  Set UserDataSheet = ManageBook.Sheets(UserDataSheetName)
 End Sub
 
 Private  Sub ShowUserWindow()
@@ -77,17 +77,35 @@ Private  Sub ShowUserWindow()
   HideSheet UserDataSheet
 End Sub
 
-Private  Sub GetDataBase()
-  Set DataBook = Workbooks.Open(CurrentPath & "\" & DataBookName)
+Private Sub DataInit()
+  DataBaseOpen
+    DataUpdate
+  DataBaseClose
+End Sub
 
-  HideWindow DataBook
+Public Sub GetDataBase()
 
   ' DataBook.Sheets(AssetsSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
   ' DataBook.Sheets(UserDataSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
 
-  DataBook.Close SaveChanges:=False
+End Sub
 
+Public Sub DataBaseOpen()
+  Set DataBook = Workbooks.Open(CurrentPath & "\" & DataBookName)
+  HideWindow DataBook
+End Sub
+
+Public Sub DataBaseClose()
+  DataBook.Close SaveChanges:=True
   Set DataBook = Nothing
+End Sub
+
+Public Sub DataUpdate()
+
+  GetDataBase
+  SetSheetHandle
+  AssetsIndexMax = GetLastDataRow(AssetsSheet)
+
 End Sub
 
 Private Function GetUserName(searchID As String) As Boolean

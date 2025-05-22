@@ -1,10 +1,13 @@
 Attribute VB_Name = "借用"
+
+Private IndexBorrowValue As String
+Private UserBorrowValue As String
+Private BriefBorrowValue As String
+
 Sub UserBorrow()
     '
-    ' 点击借用 Macro
+    ' 点击借用
     '
-    Dim computerName As String
-
     Dim cell As Range
     Dim cell1 As Range
     Set cell = Range("B7")
@@ -32,28 +35,24 @@ Sub UserBorrow()
     Dim ws3 As Worksheet
     Set ws3 = ThisWorkbook.Sheets("用户数据") ' 当前工作表
 
-    ws1.Unprotect Password:="123456" ' 如果未设置密码，可以删除 Password 参数
-    ws2.Unprotect Password:="123456" ' 如果未设置密码，可以删除 Password 参数
-    ws3.Unprotect Password:="123456" ' 如果未设置密码，可以删除 Password 参数
+'******************************************************************************
+    IndexBorrowValue = ManageSheet.Range(INDEX_BORROW_CELL).Value
+    UserBorrowValue = ManageSheet.Range(USER_BORROW_CELL).Value
+    BriefBorrowValue = ManageSheet.Range(BRIEF_BORROW_CELL).Value
+
+    If Not BorrowInputValid Then
+        Exit Sub  
+    End If
+
+    DataUpdate
+
+
+
+'******************************************************************************
 
 
     Dim flag As Long
     flag = 1
-
-    If IsEmpty(cell) Or cell.Value = "" Then
-        MsgBox "序号不能为空！", vbExclamation
-    ElseIf Not IsNumeric(cell.Value) Then
-        MsgBox "序号必须为数字！", vbCritical
-    ElseIf IsEmpty(cell1) Or cell.Value = "" Then
-        MsgBox "借用人不能为空！", vbExclamation
-        '        MsgBox "序号验证通过：" & cell.Value, vbInformation
-    Else
-        ' 获取 B7 和 C7 的值
-        searchValue = ws.Range("B7").Value
-        fillValue = ws.Range("C7").Value
-        description1 = ws.Range("D7").Value
-
-
 
         '资产清单表处理
         ' 查找资产清单 A 列最后一行
@@ -131,33 +130,7 @@ Sub UserBorrow()
             ws.Range("D7").Value = ""
             MsgBox "借用成功", vbExclamation
         End If
-    End If
 
-    ' 锁定第二行及以下的所有单元格
-    ws1.Rows("1:" & ws1.Rows.Count).Locked = True
-    ws2.Rows("1:" & ws2.Rows.Count).Locked = True
-    ws3.Rows("1:" & ws3.Rows.Count).Locked = True
-    ' 解锁 b1 单元格
-    ws1.Range("B1").Locked = False
-    ws1.Range("F1").Locked = False
-    ws1.Range("B4").Locked = False
-    ws1.Range("C4").Locked = False
-    ws1.Range("D4").Locked = False
-    ws1.Range("E4").Locked = False
-    ws1.Range("F4").Locked = False
-    ws1.Range("G4").Locked = False
-    ws1.Range("H4").Locked = False
-    ws1.Range("B7").Locked = False
-    ws1.Range("C7").Locked = False
-    ws1.Range("D7").Locked = False
-    ws1.Range("G7").Locked = False
-    ws1.Range("H7").Locked = False
-    ws1.Range("I7").Locked = False
-    ' 保护工作表，防止修改锁定的单元格
-    ws1.Protect Password:="123456", AllowFormattingCells:=True
-    ws2.Protect Password:="123456", AllowFormattingCells:=True
-    ws3.Protect Password:="123456", AllowFormattingCells:=True
-    ThisWorkbook.Save '保存当前工作表
 End Sub
 
 Sub UserReturn()
@@ -303,5 +276,27 @@ Sub UserReturn()
     ws3.Protect Password:="123456", AllowFormattingCells:=True
     ThisWorkbook.Save '保存当前工作表
 End Sub
+
+Private Function BorrowInputValid() As Boolean
+    Dim index As Variant
+    BorrowInputValid = False
+
+    index = SafeStringToLong(IndexValue)
+    Select Case True
+    Case Trim(IndexValue) = ""
+        MsgBox "序号不能为空"
+    Case Not IsNumeric(IndexValue)
+        MsgBox "序号必须为数字"
+    Case IndexValue = Fix(IndexValue)
+        MsgBox "序号必须为整数"
+    Case index > 0 & index < AssetsIndexMax
+        MsgBox "序号不在范围内"
+    Case Trim(UserBorrowValue) = ""
+        MsgBox "借用人不能为空"
+    Case Else
+        BorrowInputValid = True
+    End Select
+
+End Function
 
 
