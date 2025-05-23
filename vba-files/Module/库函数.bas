@@ -105,8 +105,10 @@ Public Sub DataUpdate()
 
     WorkbookUnLock ManageBook
     GetDataBase
-    WorkbookLock ManageBook
     SetSheetHandle
+    HideSheet AssetsSheet
+    HideSheet UserDataSheet
+    WorkbookLock ManageBook
     AssetsIndexMax = GetLastDataRow(AssetsSheet)
 
 End Sub
@@ -115,12 +117,9 @@ Public Function GetLastDataRow(ws As Worksheet, Optional Byval columnNumber As L
     GetLastDataRow = ws.Cells(ws.Rows.Count, columnNumber).End(xlUp).Row
 End Function
 
-Public Function RowsDataIsSame(row1 As Range, row2 As Range) As Boolean
+Public Function RowsDataIsSame(row1data As Variant, row2data As Variant) As Boolean
 
-    Dim arr1 As Variant, arr2 As Variant
-    arr1 = row1.Resize(1, 10).Value  ' 强制限制为10列
-    arr2 = row2.Resize(1, 10).Value
-    RowsDataIsSame = (Join(Application.Index(arr1, 1, 0),"|") = Join(Application.Index(arr2, 1, 0), "|")) 
+    RowsDataIsSame = (Join(Application.Index(row1data, 1, 0),"|") = Join(Application.Index(row2data, 1, 0), "|")) 
 
 End Function
 

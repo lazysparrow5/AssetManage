@@ -46,7 +46,8 @@ Private Sub Login()
     WorkbookLock ManageBook
   Else
     LogPrintf "用户 " & UserID & " 未注册"
-    ' MsgBox "未查询到用户，请联系管理员进行登记"
+    MsgBox "未查询到用户，请联系管理员进行登记"
+    ManageBook.Close SaveChanges:=False
   End If
 End Sub
 

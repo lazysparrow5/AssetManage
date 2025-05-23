@@ -13,7 +13,8 @@ Sub UserBorrow()
     ' 点击借用
     '
     Dim DataBaseSheet As Worksheet
-    Dim LastRowsData As Range, CurrRowsData As Range
+    Dim CurrRows As Range
+    Dim LastRowsData As Variant, CurrRowsData As Variant
 
     IndexBorrowValue = ManageSheet.Range(INDEX_BORROW_CELL).Value
     UserBorrowValue = ManageSheet.Range(USER_BORROW_CELL).Value
@@ -23,23 +24,25 @@ Sub UserBorrow()
      Exit Sub  
     End If
 
-    Set LastRowsData = AssetsSheet.Rows(IndexBorrowValue + 1)
+    LastRowsData = AssetsSheet.Rows(IndexBorrowValue + 1).Resize(1,MAX_COLUMN).Value
 
     DataBaseOpen
     DataUpdate
 
     Set DataBaseSheet = DataBook.Worksheets(AssetsSheetName)
-    Set CurrRowsData = DataBaseSheet.Rows(IndexBorrowValue + 1)
+    Set CurrRows = DataBaseSheet.Rows(IndexBorrowValue + 1)
+    CurrRowsData = DataBaseSheet.Rows(IndexBorrowValue + 1).Resize(1,MAX_COLUMN).Value
 
     If Not RowsDataIsSame(LastRowsData,CurrRowsData) Then
         MsgBox "该设备信息已被修改，请重试"
+        ReSearch
         DataBaseClose
      Exit Sub  
     End If 
 
     SheetUnlock DataBaseSheet
 
-    With CurrRowsData
+    With CurrRows
         .Cells(USER_COLUMN).Value = UserBorrowValue
         .Cells(REVISER_COLUMN).Value = UserName
         .Cells(TIME_COLUMN).Value = Date
@@ -51,14 +54,14 @@ Sub UserBorrow()
     SheetLock DataBaseSheet
 
     SheetUnLock AssetsSheet
-    CurrRowsData.Copy Destination:=LastRowsData
+    CurrRows.Copy Destination:=AssetsSheet.Rows(IndexBorrowValue + 1)
     SheetLock AssetsSheet
+    
+    DataBaseClose
 
     ManageSheet.Range(INDEX_BORROW_CELL).ClearContents
     ManageSheet.Range(USER_BORROW_CELL).ClearContents
     ManageSheet.Range(BRIEF_BORROW_CELL).ClearContents
-
-    DataBaseClose
 
     ReSearch
 
@@ -74,7 +77,8 @@ Sub UserReturn()
     End If
 
     Dim DataBaseSheet As Worksheet
-    Dim LastRowsData As Range, CurrRowsData As Range
+    Dim CurrRows As Range
+    Dim LastRowsData As Variant, CurrRowsData As Variant
 
     IndexReturnValue = ManageSheet.Range(INDEX_RETURN_CELL).Value
     UserReturnValue = ManageSheet.Range(USER_RETURN_CELL).Value
@@ -84,23 +88,25 @@ Sub UserReturn()
      Exit Sub  
     End If
 
-    Set LastRowsData = AssetsSheet.Rows(IndexReturnValue + 1)
+    LastRowsData = AssetsSheet.Rows(IndexReturnValue + 1).Resize(1,10).Value
 
     DataBaseOpen
     DataUpdate
 
     Set DataBaseSheet = DataBook.Worksheets(AssetsSheetName)
-    Set CurrRowsData = DataBaseSheet.Rows(IndexBorrowValue + 1)
+    Set CurrRows = DataBaseSheet.Rows(IndexBorrowValue + 1)
+    CurrRowsData = DataBaseSheet.Rows(IndexBorrowValue + 1).Resize(1,10).Value
 
     If Not RowsDataIsSame(LastRowsData,CurrRowsData) Then
         MsgBox "该设备信息已被修改，请重试"
+        ReSearch
         DataBaseClose
      Exit Sub  
     End If 
 
     SheetUnlock DataBaseSheet
 
-    With CurrRowsData
+    With CurrRows
         .Cells(USER_COLUMN).ClearContents
         .Cells(LOCATION_COLUMN).Value = UserReturnValue
         .Cells(TIME_COLUMN).Value = Date
@@ -112,14 +118,14 @@ Sub UserReturn()
     SheetLock DataBaseSheet
 
     SheetUnLock AssetsSheet
-    CurrRowsData.Copy Destination:=LastRowsData
+    CurrRows.Copy Destination:=AssetsSheet.Rows(IndexReturnValue + 1)
     SheetLock AssetsSheet
+    
+    DataBaseClose
 
     ManageSheet.Range(INDEX_RETURN_CELL).ClearContents
     ManageSheet.Range(USER_RETURN_CELL).ClearContents
     ManageSheet.Range(BRIEF_RETURN_CELL).ClearContents
-
-    DataBaseClose
 
     ReSearch
 
