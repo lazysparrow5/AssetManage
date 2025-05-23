@@ -7,6 +7,8 @@ Sub AssetsCheck()
     ' 获取筛选值（假设下拉菜单在A1单元格）
     filterValue = ""
 
+    LogPrintf "生成盘点表 (" & UserName & ")", Log_User
+
     TargetSearchCopy filterValue, USER_COLUMN, True
 
     Dim selectedRange As Range

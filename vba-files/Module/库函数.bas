@@ -141,10 +141,21 @@ Sub ErrHandle()
 
 End Sub
 
-Sub LogPrintf(logMessage As String)
+Public Sub LogPrintf(logMessage As String, Optional sLogtype As LogType = Log_Debug)
+    
     Dim LogPath As String
-    LogPath = CurrentPath & "\log.txt" ' 当前Log所在路径
-
+    
+    Select Case sLogtype
+     Case Log_Debug
+        LogPath = CurrentPath & "\log_Debug.txt" ' 当前Log所在路径
+     Case Log_User
+        LogPath = CurrentPath & "\log_User.txt"
+     Case Log_Err
+        LogPath = CurrentPath & "\log_Err.txt"
+     Case Log_Assets
+        LogPath = CurrentPath & "\log_Assets.txt"
+    End Select
+    
     ' 创建文件系统对象
     Dim fso As Object
     Set fso = CreateObject("Scripting.FileSystemObject")

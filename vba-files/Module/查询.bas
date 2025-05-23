@@ -9,6 +9,8 @@ Public Sub searchByName()
     ' 获取筛选值（假设下拉菜单在A1单元格）
     filterValue = ManageSheet.Range(NAME_FILTER_CELL).Value
 
+    LogPrintf "通过名字[" & filterValue & "]查询 (" & UserName & ")", Log_User
+
     ' EditableClear
 
     ' ManageSheet.Range(NAME_FILTER_CELL).Value = filterValue
@@ -27,6 +29,8 @@ Public Sub searchImprotant()
 
     filterValue = ""
 
+    LogPrintf "查询入资资产 (" & UserName & ")" , Log_User
+
     TargetSearchCopy filterValue, SGMW_COLUMN, True
 
     LastSearch = ImportantSearch
@@ -38,6 +42,8 @@ Public Sub searchByType()
     Dim filterValue As String
     ' 获取筛选值（假设下拉菜单在A1单元格）
     filterValue = ManageSheet.Range(TYPE_FILTER_CELL).Value
+
+    LogPrintf "通过类型{" & filterValue & "}查询 (" & UserName & ")", Log_User
 
     ' EditableClear
 
@@ -126,4 +132,26 @@ Public Sub ExcTargetSearch(matchedRange As Range, TargetColumn As Long, filterVa
     Next cell
 
 End Sub
+
+Public Function NameIsExsits(sName As String) As Boolean
+  NameIsExsits = False
+
+  Dim searchRange As Range
+  Dim foundCell As Range
+  With UserDataSheet
+    Set searchRange = .Range("A1:A" & .Cells(.Rows.Count, 1).End(xlUp).Row)
+    ' 精确查找（区分大小写）
+    Set foundCell = searchRange.Find(What:=sName, _
+    LookIn:=xlValues, _
+    LookAt:=xlWhole, _
+    MatchCase:=True)
+
+    If Not foundCell Is Nothing Then
+      ' LogPrintf ("匹配项位于：" & foundCell.Address(0, 0))
+      NameIsExsits = True
+    End If
+
+  End With
+
+End Function
 

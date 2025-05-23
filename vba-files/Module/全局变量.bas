@@ -7,6 +7,13 @@ ImportantSearch
 CheckSearch
 End Enum
 
+Public Enum LogType
+Log_Debug = 1
+Log_User 
+Log_Err
+Log_Assets
+End Enum
+
 '用户数据
 Public Const AdminID As String = "陈聪"
 Public Const AdminPwd As String = "123456"

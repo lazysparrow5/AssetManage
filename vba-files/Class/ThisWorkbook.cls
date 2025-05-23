@@ -11,7 +11,6 @@ Private Sub Workbook_Open()
   ' 这里是打开工作簿时要执行的代码
   WorkbookInit
   SheetsInit
-  LogPrintf "欢迎使用资产管理系统"
   Login
   Application.Visible = True
 End Sub
@@ -38,14 +37,14 @@ End Sub
 Private Sub Login()
   UserID = Environ("COMPUTERNAME")
   If GetUserName(UserID) Then
-    LogPrintf "用户 " & UserName & " 已登陆"
+    LogPrintf "用户 " & UserName & " 已登陆", Log_User
     WorkbookUnLock ManageBook
     ManageSheet.Range(NAME_FILTER_CELL).Value = UserName
     SearchByName
     ShowUserWindow
     WorkbookLock ManageBook
   Else
-    LogPrintf "用户 " & UserID & " 未注册"
+    LogPrintf "用户 " & UserID & " 未注册", Log_User
     MsgBox "未查询到用户，请联系管理员进行登记"
     ManageBook.Close SaveChanges:=False
   End If

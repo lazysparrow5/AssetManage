@@ -25,6 +25,8 @@ Sub UserBorrow()
     End If
 
     LastRowsData = AssetsSheet.Rows(IndexBorrowValue + 1).Resize(1,MAX_COLUMN).Value
+    
+    LogPrintf "[" & UserBorrowValue & "]借用<" & LastRowsData(1, NAME_COLUMN) & "> (" & UserName & ")", Log_User
 
     DataBaseOpen
     DataUpdate
@@ -34,7 +36,7 @@ Sub UserBorrow()
     CurrRowsData = DataBaseSheet.Rows(IndexBorrowValue + 1).Resize(1,MAX_COLUMN).Value
 
     If Not RowsDataIsSame(LastRowsData,CurrRowsData) Then
-        MsgBox "该设备信息已被修改，请重试"
+        MsgBox "该设备信息存在更新，请重试"
         ReSearch
         DataBaseClose
      Exit Sub  
@@ -89,6 +91,7 @@ Sub UserReturn()
     End If
 
     LastRowsData = AssetsSheet.Rows(IndexReturnValue + 1).Resize(1,10).Value
+    LogPrintf "[" & UserBorrowValue & "]归还<" & LastRowsData(1,NAME_COLUMN) & "> (" & UserName & ")", Log_User
 
     DataBaseOpen
     DataUpdate
@@ -98,7 +101,7 @@ Sub UserReturn()
     CurrRowsData = DataBaseSheet.Rows(IndexBorrowValue + 1).Resize(1,10).Value
 
     If Not RowsDataIsSame(LastRowsData,CurrRowsData) Then
-        MsgBox "该设备信息已被修改，请重试"
+        MsgBox "该设备信息存在更新，请重试"
         ReSearch
         DataBaseClose
      Exit Sub  
@@ -146,6 +149,8 @@ Private Function BorrowInputValid() As Boolean
         MsgBox "序号不在范围内"
      Case Trim(UserBorrowValue) = ""
         MsgBox "借用人不能为空"
+     Case Not NameIsExsits(Trim(UserBorrowValue))
+        MsgBox "借用人必须先联系管理员注册"
      Case Else
         BorrowInputValid = True
     End Select
