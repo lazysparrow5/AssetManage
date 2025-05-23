@@ -61,16 +61,33 @@ Public Sub HideSheet(ws As Worksheet)
 End Sub
 
 Private Sub SetSheetHandle()
-    Set StartSheet = ManageBook.Sheets(StartSheetName)
-    Set ManageSheet = ManageBook.Sheets(ManageSheetName)
-    Set AssetsSheet = ManageBook.Sheets(AssetsSheetName)
-    Set UserDataSheet = ManageBook.Sheets(UserDataSheetName)
+    If SheetExists(ManageBook,StartSheetName) Then
+        Set StartSheet = ManageBook.Sheets(StartSheetName)
+    End If
+    If SheetExists(ManageBook,ManageSheetName) Then
+        Set ManageSheet = ManageBook.Sheets(ManageSheetName)
+    End If
+    If SheetExists(ManageBook,AssetsSheetName) Then
+        Set AssetsSheet = ManageBook.Sheets(AssetsSheetName)
+    End If
+    If SheetExists(ManageBook,UserDataSheetName) Then
+        Set UserDataSheet = ManageBook.Sheets(UserDataSheetName)
+    End If
 End Sub
 
 Public Sub GetDataBase()
 
-    ' DataBook.Sheets(AssetsSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
-    ' DataBook.Sheets(UserDataSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
+    Application.DisplayAlerts = False
+    If SheetExists(ManageBook,AssetsSheetName) Then
+        ManageBook.Sheets(AssetsSheetName).Delete
+    End If
+    If SheetExists(ManageBook,UserDataSheetName) Then
+        ManageBook.Sheets(UserDataSheetName).Delete
+    End If
+    Application.DisplayAlerts = True
+    
+    DataBook.Sheets(AssetsSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
+    DataBook.Sheets(UserDataSheetName).Copy After:=ManageBook.Sheets(ManageBook.Sheets.Count)
 
 End Sub
 
@@ -86,7 +103,9 @@ End Sub
 
 Public Sub DataUpdate()
 
+    WorkbookUnLock ManageBook
     GetDataBase
+    WorkbookLock ManageBook
     SetSheetHandle
     AssetsIndexMax = GetLastDataRow(AssetsSheet)
 
@@ -103,6 +122,17 @@ Public Function RowsDataIsSame(row1 As Range, row2 As Range) As Boolean
     arr2 = row2.Resize(1, 10).Value
     RowsDataIsSame = (Join(Application.Index(arr1, 1, 0),"|") = Join(Application.Index(arr2, 1, 0), "|")) 
 
+End Function
+
+Public Function SheetExists(wb As Workbook, sName As String) As Boolean
+    SheetExists = False
+    Dim ws As Worksheet
+    On Error Resume Next
+    Set ws = wb.Sheets(sName)
+    On Error GoTo 0
+    If Not ws Is Nothing Then
+        SheetExists = True
+    End If
 End Function
 
 

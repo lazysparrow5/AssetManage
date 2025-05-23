@@ -27,15 +27,11 @@ End Sub
 
 Private Sub SheetsInit()
 
-  WorkbookUnLock ManageBook
-
   DataInit
 
   ShowNoMacroWindow
 
   SheetControl
-
-  WorkbookLock ManageBook
 
 End Sub
 
@@ -62,11 +58,13 @@ Private Sub SheetControl()
 End Sub
 
 Private Sub ShowUserWindow()
+  WorkbookUnLock ManageBook
   ShowSheet ManageSheet
 
   HideSheet StartSheet
   HideSheet AssetsSheet
   HideSheet UserDataSheet
+  WorkbookLock ManageBook
 End Sub
 
 Private Sub ShowAdminWindow()
@@ -84,11 +82,13 @@ Private Sub ShowAdminWindow()
 End Sub
 
 Private  Sub ShowNoMacroWindow()
+  WorkbookUnLock ManageBook
   ShowSheet StartSheet
 
   HideSheet ManageSheet
   HideSheet AssetsSheet
   HideSheet UserDataSheet
+  WorkbookLock ManageBook
 End Sub
 
 Private Sub DataInit()

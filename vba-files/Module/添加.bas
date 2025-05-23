@@ -1,5 +1,11 @@
 Attribute VB_Name = "添加"
 Sub AddEquipment()
+
+    If UserName <> AdminID Then
+        MsgBox "归还处于维护中，请联系管理员归还"
+        Exit Sub
+    End If
+
     Dim ws As Worksheet
     Dim lastRow As Long
     Dim maxRow As Long

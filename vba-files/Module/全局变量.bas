@@ -8,7 +8,7 @@ CheckSearch
 End Enum
 
 '用户数据
-Public Const AdminID As String = "XING"
+Public Const AdminID As String = "陈聪"
 Public Const AdminPwd As String = "123456"
 
 Public UserName As String '用户名'
@@ -32,7 +32,7 @@ Public Const INDEX_BORROW_CELL As String = "B7"     ' 借用序号输入位置
 Public Const USER_BORROW_CELL As String = "C7"      ' 借用人名称输入位置
 Public Const BRIEF_BORROW_CELL As String = "D7"     ' 借用物品简介输入位置
 Public Const INDEX_RETURN_CELL As String = "G7"     ' 归还序号输入位置
-Public Const POSITION_RETURN_CELL As String = "H7"      ' 归还地址输入位置
+Public Const USER_RETURN_CELL As String = "H7"      ' 归还地址输入位置
 Public Const BRIEF_RETURN_CELL As String = "I7"     ' 归还物品简介输入位置
 
 ' 资产表格数据
